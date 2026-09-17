@@ -109,6 +109,23 @@ describe('classifyRecord', () => {
   })
 })
 
+describe('regression: a clock primed BEFORE the write must not read as skew', () => {
+  // Found on the deployed build. The shared clock ticks on an interval, but a record is
+  // written when a fetch RESOLVES — after the last tick. That made `verifiedAt` newer than
+  // `now`, the age went negative, and the negative-age guard reported `unknown` for skew
+  // the app had invented itself: six "Unknown / clock skew" badges on every fresh load.
+  //
+  // The guard is correct and stays. The fix was to re-prime the clock on write. This test
+  // pins the invariant that makes the fix necessary.
+  it('reports unknown when now is even 1ms behind verifiedAt', () => {
+    expect(classify({ verifiedAt: NOW + 1, now: NOW, budget })).toBe('unknown')
+  })
+
+  it('reports fresh the instant the clock catches up', () => {
+    expect(classify({ verifiedAt: NOW, now: NOW, budget })).toBe('fresh')
+  })
+})
+
 describe('formatAge', () => {
   it('formats across the scale', () => {
     expect(formatAge(0)).toBe('just now')

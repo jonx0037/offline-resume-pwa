@@ -20,6 +20,21 @@ function prime() {
   now.value = Date.now()
 }
 
+/**
+ * Re-prime the shared clock immediately.
+ *
+ * Call this after writing a record. The clock ticks every 10s, but a record is written
+ * when a fetch RESOLVES — which is after the last tick. Without this, `verifiedAt` is
+ * newer than `now`, the age computes negative, and the negative-age guard in classify()
+ * correctly reports `unknown`... for skew this app invented itself. Every fresh load
+ * would show `Unknown / clock skew` until the next tick.
+ *
+ * The guard is right. The clock was wrong.
+ */
+export function primeNow() {
+  prime()
+}
+
 function start() {
   if (timer !== null) return
   timer = setInterval(prime, 10_000)

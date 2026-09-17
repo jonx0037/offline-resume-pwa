@@ -3,6 +3,7 @@ import { createResumeCache } from '@/lib/cache'
 import { classifyRecord, type Freshness } from '@/lib/freshness'
 import { SCHEMA_VERSION, type CachedSection, type SectionId, type SectionPayload } from '@/lib/types'
 import { noteFailure, noteSuccess, REQUEST_TIMEOUT_MS } from './useLink'
+import { primeNow } from './useNow'
 
 const cache = createResumeCache()
 
@@ -87,6 +88,7 @@ export function useResumeSection(id: SectionId, now: () => number) {
         const next = await cache.touch(id, at)
         if (next) record.value = next
         else if (record.value) record.value = { ...record.value, verifiedAt: at }
+        primeNow() // `at` is newer than the last tick; keep now >= verifiedAt
         outcome.value = 'revalidated-304'
         return
       }
@@ -117,6 +119,7 @@ export function useResumeSection(id: SectionId, now: () => number) {
       }
       await cache.put(next)
       record.value = next
+      primeNow() // `at` is newer than the last tick; keep now >= verifiedAt
       outcome.value = 'fresh-200'
     } catch {
       // Timeout, abort, DNS, TLS, or transport failure. All indistinguishable to the
