@@ -1,0 +1,18 @@
+// TSConfig for Vercel Functions under api/.
+//
+// These run on Node's native ESM loader with type-stripping — Vercel does NOT bundle them.
+// That is why this uses nodenext rather than bundler resolution: under nodenext, a relative
+// import written as './_data/resume.js' correctly resolves to _data/resume.ts at check time
+// AND to the emitted .js at runtime. Bundler mode would let an extensionless import pass
+// type-check and then 500 in production.
+{
+  "extends": "@tsconfig/node24/tsconfig.json",
+  "include": ["api/**/*.ts"],
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "types": ["node"],
+    "noEmit": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.api.tsbuildinfo"
+  }
+}
