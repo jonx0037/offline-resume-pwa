@@ -149,8 +149,9 @@ export const SECTIONS: Record<SectionId, Section> = {
       {
         name: 'finrag.io',
         blurb:
-          'Multimodal financial RAG platform — Gemini Embeddings 2 over Qdrant, Cloudflare R2 ' +
-          'document store, FastAPI backend, Claude Sonnet synthesis, Next.js on Vercel.',
+          'Multimodal retrieval over financial documents — text, PDF, chart and audio embedded ' +
+          'by one Gemini model into a shared vector space; Qdrant with dual-resolution vectors ' +
+          '(3072/768), SHAP-explained results, Cloudflare R2. FastAPI on Railway, Next.js on Vercel.',
       },
       {
         name: 'market-sentiment.io',
