@@ -17,7 +17,7 @@
 export const SCHEMA_VERSION = 1
 
 /** When the underlying content was last edited by a human. Distinct from when it was served. */
-export const CONTENT_AUTHORED_AT = '2026-09-17T18:00:00.000Z'
+export const CONTENT_AUTHORED_AT = '2026-09-20T02:21:00.000Z'
 
 export type SectionId =
   | 'identity'
